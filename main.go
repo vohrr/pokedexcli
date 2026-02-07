@@ -14,13 +14,12 @@ func main() {
 		if scanner.Scan() {
 			input := cleanInput(scanner.Text())
 			commands := getCommands()
-			switch input[0] {
-			case exit:
-				commands[exit].callback()
-			case help:
-				commands[help].callback()
-			default:
+
+			if command, ok := commands[input[0]]; ok {
+				command.callback()
+			} else {
 				fmt.Println("Unknown command")
+				commands[help].callback()
 			}
 		} else {
 			fmt.Printf("Invalid Input")
