@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/vohrr/pokeapi"
 	"os"
 	"strings"
 )
@@ -13,8 +14,10 @@ type cliCommand struct {
 }
 
 const (
-	exit string = "exit"
-	help string = "help"
+	exit    string = "exit"
+	help    string = "help"
+	map_cmd string = "map"
+	mapb    string = "mapb"
 )
 
 func getCommands() map[string]cliCommand {
@@ -25,9 +28,14 @@ func getCommands() map[string]cliCommand {
 			description: "Displays a help message",
 			callback:    commandHelp,
 		},
-		"map": {
+		map_cmd: {
 			name:        "map",
 			description: "Lists the areas of the Pokemon world",
+			callback:    commandMap,
+		},
+		mapb: {
+			name:        mapb,
+			description: "",
 			callback:    commandMap,
 		},
 		exit: {
@@ -59,5 +67,11 @@ func commandHelp() error {
 }
 
 func commandMap() error {
+	// call pokeAPI to grab locations
+	response, err := pokeapi.Fetch[pokeapi.LocationAreaResponse](pokeapi.GetLocationAreasUrl)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Found %d areas!\n", response.Count)
 	return nil
 }

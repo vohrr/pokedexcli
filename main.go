@@ -14,9 +14,12 @@ func main() {
 		if scanner.Scan() {
 			input := cleanInput(scanner.Text())
 			commands := getCommands()
-
+			var err error
 			if command, ok := commands[input[0]]; ok {
-				command.callback()
+				err = command.callback()
+				if err != nil {
+					fmt.Println(err)
+				}
 			} else {
 				fmt.Println("Unknown command")
 				commands[help].callback()
