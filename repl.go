@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/vohrr/pokeapi"
 	"os"
 	"strings"
-
-	"github.com/vohrr/pokeapi"
 )
 
 type cliCommand struct {
@@ -76,7 +75,9 @@ func commandHelp(config *config) error {
 }
 
 func commandMap(config *config) error {
-	// call pokeAPI to grab locations
+	//cache check
+
+	// call pokeAPI to grab locations on cache miss
 	url := pokeapi.LocationAreasUrl
 	if config.Next != nil {
 		url = *config.Next
