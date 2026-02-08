@@ -3,13 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/vohrr/pokecache"
 	"os"
+	"time"
 )
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	var config config
-
+	config.cache = pokecache.NewCache(60 * time.Second)
 	for {
 		fmt.Print("Pokedex > ")
 		if scanner.Scan() {
