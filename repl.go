@@ -2,15 +2,21 @@ package main
 
 import (
 	"fmt"
-	"github.com/vohrr/pokeapi"
 	"os"
 	"strings"
+
+	"github.com/vohrr/pokeapi"
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(config *config) error
+}
+
+type config struct {
+	Next     *string
+	Previous *string
 }
 
 const (
@@ -36,7 +42,7 @@ func getCommands() map[string]cliCommand {
 		mapb: {
 			name:        mapb,
 			description: "",
-			callback:    commandMap,
+			callback:    commandMapb,
 		},
 		exit: {
 			name:        exit,
@@ -47,16 +53,19 @@ func getCommands() map[string]cliCommand {
 }
 
 func cleanInput(text string) []string {
+	if len(text) == 0 {
+		return []string{}
+	}
 	return strings.Fields(strings.ToLower(text))
 }
 
-func commandExit() error {
+func commandExit(config *config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp() error {
+func commandHelp(config *config) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println()
@@ -66,12 +75,39 @@ func commandHelp() error {
 	return nil
 }
 
-func commandMap() error {
+func commandMap(config *config) error {
 	// call pokeAPI to grab locations
-	response, err := pokeapi.Fetch[pokeapi.LocationAreaResponse](pokeapi.GetLocationAreasUrl)
+	url := pokeapi.LocationAreasUrl
+	if config.Next != nil {
+		url = *config.Next
+	}
+	response, err := pokeapi.Fetch[pokeapi.LocationAreaResponse](url)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Found %d areas!\n", response.Count)
+
+	for _, area := range response.Results {
+		fmt.Println(area.Name)
+	}
+	config.Next = response.Next
+	config.Previous = response.Previous
+	return nil
+}
+
+func commandMapb(config *config) error {
+	if config.Previous == nil {
+		fmt.Println("you're on the first page")
+		return nil
+	}
+	response, err := pokeapi.Fetch[pokeapi.LocationAreaResponse](*config.Previous)
+	if err != nil {
+		return err
+	}
+
+	for _, area := range response.Results {
+		fmt.Println(area.Name)
+	}
+	config.Next = response.Next
+	config.Previous = response.Previous
 	return nil
 }

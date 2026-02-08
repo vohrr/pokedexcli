@@ -8,8 +8,8 @@ import (
 
 type LocationAreaResponse struct {
 	Count    int
-	Next     string
-	Previous string
+	Next     *string
+	Previous *string
 	Results  []LocationArea
 }
 
@@ -19,23 +19,23 @@ type LocationArea struct {
 }
 
 const (
-	GetLocationAreasUrl string = "https://pokeapi.co/api/v2/location-area"
+	LocationAreasUrl string = "https://pokeapi.co/api/v2/location-area"
 )
 
 func Fetch[T any](url string) (T, error) {
 	res, err := http.Get(url)
-	var returnStruct T
+	var responseObject T
 	if err != nil || res.StatusCode > 299 {
-		return returnStruct, fmt.Errorf("Failed request to POKEAPI, %s", res.Status)
+		return responseObject, fmt.Errorf("Failed request to POKEAPI, %s", res.Status)
 	}
 
 	defer res.Body.Close()
 	decoder := json.NewDecoder(res.Body)
-	err = decoder.Decode(&returnStruct)
+	err = decoder.Decode(&responseObject)
 
 	if err != nil {
-		return returnStruct, err
+		return responseObject, err
 	}
 
-	return returnStruct, nil
+	return responseObject, nil
 }
