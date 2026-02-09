@@ -27,8 +27,7 @@ func main() {
 			commands := getCommands()
 
 			if command, ok := commands[input[0]]; ok {
-
-				err = command.callback(&config)
+				err = command.callback(&config, input[1:]...)
 
 				if err != nil {
 					fmt.Println(err)
