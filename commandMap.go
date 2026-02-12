@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/vohrr/pokeapi"
-	"github.com/vohrr/pokecache"
 )
 
 func commandMapf(config *config, args ...string) error {
@@ -38,10 +37,6 @@ func getMap(config *config, url string) error {
 	var err error
 	value, ok := config.cache.Get(url)
 	if !ok {
-		// call pokeAPI to grab locations on cache miss
-		if logCache {
-			pokecache.CacheLog(false, url)
-		}
 		response, err = pokeapi.Fetch[pokeapi.LocationAreaResponse](url)
 		if err != nil {
 			return err
@@ -54,9 +49,6 @@ func getMap(config *config, url string) error {
 			return err
 		}
 	} else {
-		if logCache {
-			pokecache.CacheLog(true, url)
-		}
 		err = json.Unmarshal(value, &response)
 		if err != nil {
 			return err

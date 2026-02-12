@@ -16,6 +16,10 @@ type cacheEntry struct {
 	val       []byte
 }
 
+const (
+	logCache bool = false
+)
+
 func NewCache(interval time.Duration) *Cache {
 	cache := Cache{
 		cache: map[string]cacheEntry{},
@@ -31,6 +35,14 @@ func NewCache(interval time.Duration) *Cache {
 }
 
 func (c *Cache) Get(key string) ([]byte, bool) {
+	value, ok := c.get(key)
+	if logCache {
+		CacheLog(ok, key)
+	}
+	return value, ok
+}
+
+func (c *Cache) get(key string) ([]byte, bool) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	//try read cache
