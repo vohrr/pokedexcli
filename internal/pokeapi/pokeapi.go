@@ -6,18 +6,6 @@ import (
 	"net/http"
 )
 
-type LocationAreaResponse struct {
-	Count    int
-	Next     *string
-	Previous *string
-	Results  []LocationArea
-}
-
-type LocationArea struct {
-	Name string
-	Url  string
-}
-
 const (
 	LocationAreasUrl string = "https://pokeapi.co/api/v2/location-area"
 )
