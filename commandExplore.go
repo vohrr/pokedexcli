@@ -7,12 +7,15 @@ import (
 )
 
 func commandExplore(config *config, args ...string) error {
-	if len(args) < 1 {
-		return fmt.Errorf("location area not specified")
-	}
-	url := fmt.Sprintf("%s/%s", pokeapi.LocationAreasUrl, args[0])
 	var res pokeapi.LocationAreaResponseSingle
 	var err error
+
+	location, err := extractArg(args)
+	if err != nil {
+		return err
+	}
+
+	url := fmt.Sprintf("%s/%s", pokeapi.LocationAreasUrl, location)
 	value, ok := config.cache.Get(url)
 	if !ok {
 		res, err = pokeapi.Fetch[pokeapi.LocationAreaResponseSingle](url)

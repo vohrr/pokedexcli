@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/vohrr/pokeapi"
 	"github.com/vohrr/pokecache"
 	"os"
 	"time"
@@ -12,6 +13,7 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	var config config
 	config.cache = pokecache.NewCache(60 * time.Second)
+	config.dex = make(map[string]pokeapi.PokemonResponse)
 	for {
 		fmt.Print("Pokedex > ")
 		if scanner.Scan() {

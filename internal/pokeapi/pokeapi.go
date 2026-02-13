@@ -8,6 +8,7 @@ import (
 
 const (
 	LocationAreasUrl string = "https://pokeapi.co/api/v2/location-area"
+	PokemonUrl       string = "https://pokeapi.co/api/v2/pokemon"
 )
 
 func Fetch[T any](url string) (T, error) {
