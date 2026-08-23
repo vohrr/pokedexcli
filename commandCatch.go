@@ -10,6 +10,7 @@ import (
 func commandCatch(config *config, args ...string) error {
 	pokemon, err := extractArg(args)
 	if err != nil {
+		fmt.Printf("An error has occurred: %s\n", err)
 		return err
 	}
 
